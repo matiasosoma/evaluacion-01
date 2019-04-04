@@ -1,68 +1,91 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE HTML>
+<html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <style>
-        *{ margin:0; padding:0;}
-        body {height:100%; width:100%; overflow:hidden;}
-        #menu { top: 1rem; right: 1rem; position: fixed; z-index:9999; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<title>Desde Arica a Punta Arenas</title>
+<style>
+        body{
+            background: lightyellow;
     </style>
-    <title>p5.js</title>
 </head>
 <body>
-    <!-- este será el munú -->
-    <select id="menu" onchange="location=this.value;">
-        <option value="index.html">Primero</option>
-        <option value="segundo.html">Segundo</option>
-        <option value="tercero.html">Tercero</option>
-        <option value="cuarto.html" selected>Cuarto</option>
-    </select>
-    <!-- este div recibirá al canvas-->
-    <div id="aqui"></div>
-    <!-- vamos a buscar la biblioteca -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
-    <script>
-        // hay casos en que podrías necesitar variables globales
-        function setup() {
-            createCanvas(windowWidth,windowHeight).parent("aqui");
-            background(210);
-        }
-
- function draw() {
-  background(220);
+<nav class="navbar navbar-expand-md navbar-light fixed-top bg-lightblue">
+<div class="container">
+	<a class="navbar-brand" href="index.html">Temperatura en ciudades de Chile</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+	<span class="navbar-toggler-icon"></span>
+	</button>
+	</div>
+</div>
+</nav>	
+<div class="container pt-5">
+	<div class="row justify-content-center">
+		<div class="col-sm-8">
+			<div class="input-group mb-3">
+				<select class="custom-select" id="city">
+				<option selected>Escoge una ciudad</option>
+				<option value="3899539">Antofagasta, CL</option>
+				<option value="3899361">Arica, CL</option>    
+				<option value="3893656">Copiapo, CL</option>
+				<option value="3887127">Iquique, CL</option>
+                <option value="3883167">Linares, CL</option>    
+				<option value="3877949">Osorno, CL</option>
+				<option value="3874960">Puerto Montt, CL</option>
+				<option value="3874787">Punta Arenas, CL</option>
+				<option value="3873775">Rancagua, CL</option>
+				<option value="3871336">Santiago, CL</option> 
+                <option value="3870294">Talca, CL</option>    
+                <option value="3870282">Talcahuano, CL</option>
+				<option value="3870011">Temuco, CL</option>
+				<option value="3868707">Valdivia, CL</option>
+				<option value="3868626">Valparaiso, CL</option>
+				</select>
+				<div class="input-group-append">
+					<button id="submit">submit</button>
+				</div>
+	</div>
+</div>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col pt-5" id="here"></div>
+	</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/addons/p5.dom.min.js"></script>
+<script>
+var input;
+//Obtenga su apiKey en https://openweathermap.org/
+var apiKey = '06516a30b3095227059b8daf88b9dbd1';
+function setup() {
+	var button = select('#submit');
+	button.mousePressed(estaCiudad);
+	input = select('#city');
 }
-var tiempo;
-
-function preload() {
-var key = "06516a30b3095227059b8daf88b9dbd1";
-var city = "Angol,CL"
-
-tiempo = loadJSON("https://api.openweathermap.org/data/2.5/weather?q="+ city + "&units=metric&APPID="+ key);
+function estaCiudad() {
+	var laURL = 'https://api.openweathermap.org/data/2.5/weather?id=' + input.value() + '&units=metric&APPID=' + '06516a30b3095227059b8daf88b9dbd1';
+	loadJSON(laURL, gotData);
 }
-
-	function setup() {
-  createCanvas(windowWidth,windowHeight);
-print (tiempo);
-		noLoop();
-	    }
-
-function draw() {
-  background(220);
-var calor = Math.round(tiempo.main.temp);
-	if (calor > 15){
-		fill(255,0,0);
-	} else {
-		fill(0,0,255);
-	}
-	textSize(36);
-	text(calor,10,40);
-text('Temperatura en Angol', 12,78);
-    
-	
+function gotData(data) {
+	console.log(data);
+	var canvas = createCanvas(windowWidth, windowHeight);
+	canvas.position(0,0);
+	canvas.style('z-index','-1');
+	fill('red');
+	background('lightblue')
+	textAlign(LEFT);
+	textSize(72);
+	text(Math.round(data.main.temp) + 'º C', 50, height-50);
+	textAlign(RIGHT);
+	textSize(24);
+	text(data.name + ', ' + data.sys.country, width-80, height-80);
+	textSize(16);
+	text('Viento: ' + data.wind.speed + ' km/hr, ' + data.wind.deg + 'º', width-80, height-50);
 }
-     
-    </script>
+</script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
