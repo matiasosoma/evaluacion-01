@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        *{ margin:0; padding:0;}
+        body {height:100%; width:100%; overflow:hidden;}
+        #menu { top: 1rem; right: 1rem; position: fixed; z-index:9999; }
+    </style>
+    <title>p5.js</title>
+</head>
+<body>
+    <!-- este será el munú -->
+    <select id="menu" onchange="location=this.value;">
+        <option value="index.html" selected>Primero</option>
+        <option value="segundo.html">Segundo</option>
+        <option value="tercero.html">Tercero</option>
+        <option value="cuarto.html">Cuarto</option>
+    </select>
+    <!-- este div recibirá al canvas-->
+    <div id="aqui"></div>
+    <!-- vamos a buscar la biblioteca -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+    <script>
+        // hay casos en que podrías necesitar variables globales
+         var data, total;
+
+        function preload() {
+            data = loadJSON('https://api.myjson.com/bins/swlh4');
+        }
+
+ 
+        function setup() {
+            createCanvas(windowWidth,windowHeight).parent("aqui");
+            background('lightblue');
+            print(data);
+            noLoop();
+            noStroke();
+            textAlign(CENTER);
+
+            for(var n = 0; n < 6; n++){
+
+                if(data[n].ranking < 10){
+                    fill('yellow');
+                } else {
+                    fill('blue');
+                }
+
+                ellipse(
+                    width/7*(n+1),
+                    data[n].ranking+300,(data[n].ranking)-160,(data[n].ranking)-160);                
+
+                fill(251, 127, 4);
+                textSize(16);
+                text(
+                    data[n].album,width/7*(n+1),(height/2));
+                fill(251, 4, 199);
+                text('#'+
+                data[n].ranking,width/7*(n+1),(height-465));
+                
+        textSize(45);
+            fill('red');    
+        text('Ranking de albumes de Primus' + '\nsegún billboard 200', width/2,100)
+            }
+
+        }
+
+        
+        function windowResized(){
+            resizeCanvas(windowWidth, windowHeight);
+            background(225); 
+        }
+    </script>
+</body>
+</html>
